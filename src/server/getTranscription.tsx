@@ -1,14 +1,18 @@
 'use server'
 
+import { Readable } from "stream"
 import * as fs from 'fs'
 import path from 'path'
-import OpenAI from 'openai'
+import OpenAI, { toFile } from 'openai'
 
 const openai = new OpenAI()
 
-export const getTranscription = async (audio: string) => {
+export const getTranscription = async (audio: Buffer) => {
+  console.log(audio)
+  const audioToFile = await toFile(Readable.from(audio), 'audio.mp3');
+
   const transcription = await openai.audio.transcriptions.create({
-    file: new File([audio], "audio", { type: 'audio/m4a' }),
+    file: audioToFile,
     model: 'whisper-1',
   })
 

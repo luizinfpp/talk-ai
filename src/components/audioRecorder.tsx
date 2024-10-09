@@ -1,6 +1,6 @@
 import { saveFile } from "@/server/getTranscription";
 import { useState, useRef, Dispatch, SetStateAction } from "react";
-const AudioRecorder = ({setAudio}: {setAudio: Dispatch<SetStateAction<string | null>>}) => {
+const AudioRecorder = ({setAudio}: {setAudio: Dispatch<SetStateAction<Blob | null>>}) => {
   const mimeType = "audio/webm";
 
   const [permission, setPermission] = useState(false);
@@ -56,9 +56,9 @@ const AudioRecorder = ({setAudio}: {setAudio: Dispatch<SetStateAction<string | n
        const audioBlob = new Blob(audioChunks, { type: mimeType });
       //creates a playable URL from the blob file.
        const audioUrl = URL.createObjectURL(audioBlob);
-       console.log(audioUrl)
-       setAudio(audioUrl);
-       saveFile()
+       setAudio(audioBlob)
+       //setAudio(audioUrl);
+       //saveFile()
        setAudioChunks([]);
     };
   };

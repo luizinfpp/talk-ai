@@ -19,7 +19,7 @@ export default function Home() {
 
   const [phrases, setPhrases] = useState<PhrasesType>([])
 
-  const [audio, setAudio] = useState<string|null>(null);
+  const [audio, setAudio] = useState<Blob|null>(null);
 
   const sound = new Howl({
     src: ['hello.mp3'],
@@ -33,8 +33,11 @@ export default function Home() {
     setPhrases((old) => [...old.slice(0, -1), { phrase: text, user: true }])
   }
 
-  const transcribeAudio = async (audio: string) => {
-    const text = await getTranscription(audio)
+  const transcribeAudio = async (audio: Blob) => {
+    // const audioBlob = new Blob(audio)
+    const audioBuffer = await audio.arrayBuffer()
+    const buffer = Buffer.from(audioBuffer)
+    const text = await getTranscription(buffer)
     setTextFromVoice(text)
     // setPhrases((old) => [...old, { phrase: 'Carregando...', user: true, loading: true }])
     // const text = await new Promise<string>((resolve) => setTimeout(() => resolve('Hello'), 2500))
@@ -81,7 +84,7 @@ export default function Home() {
       {
         audio? 
         <div className='flex flex-col'>
-          <audio src={audio} controls></audio>
+          {/* <audio src={audio} controls></audio> */}
           <Button onClick={() => transcribeAudio(audio)}>Transcript</Button>
         </div>:
         <></>
