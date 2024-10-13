@@ -1,13 +1,51 @@
-import { saveFile } from "@/server/getTranscription";
+import { bufferToBase64 } from "@/lib/base64";
 import { useState, useRef, Dispatch, SetStateAction } from "react";
-const AudioRecorder = ({setAudio}: {setAudio: Dispatch<SetStateAction<Blob | null>>}) => {
+import { Button } from "./ui/button";
+import MicOnIcon from "./icons/mic_on";
+import { TalkingType } from "@/lib/types";
+
+interface AudioRecorderProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  talkingStatus: TalkingType
+  setAudio: Dispatch<SetStateAction<string | null>>
+  setTalkingStatus: Dispatch<SetStateAction<TalkingType>>
+}
+
+const AudioRecorder = ({setAudio, talkingStatus, setTalkingStatus, ...props}: AudioRecorderProps) => {
   const mimeType = "audio/webm";
 
   const [permission, setPermission] = useState(false);
   const mediaRecorder = useRef<MediaRecorder|null>(null);
-  const [recordingStatus, setRecordingStatus] = useState("inactive");
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+
+  const actionHandler = () => {
+    switch (talkingStatus) {
+      case 'unable':
+        getMicrophonePermission()
+        break
+      case 'ready':
+        startRecording()
+        break
+      case 'recording':
+        stopRecording()
+        break
+      default:
+        break
+    }
+  }
+
+  const buttonStyleHandler = () : "disabled" | "unabled" | "default" | "destructive" | null | undefined => {
+    switch (talkingStatus) {
+      case 'unable':
+        return 'unabled'
+      case 'ready':
+        return 'default'
+      case 'recording':
+        return 'destructive'      
+      default:
+        return 'disabled'
+    }
+  }
 
   const getMicrophonePermission = async () => {
     if ("MediaRecorder" in window) {
@@ -18,6 +56,7 @@ const AudioRecorder = ({setAudio}: {setAudio: Dispatch<SetStateAction<Blob | nul
         });
         setPermission(true);
         setStream(streamData);
+        setTalkingStatus('ready')
       } catch (err) {
         alert(err);
       }
@@ -29,12 +68,10 @@ const AudioRecorder = ({setAudio}: {setAudio: Dispatch<SetStateAction<Blob | nul
   const startRecording = async () => {
     if (!stream) return
 
-    setRecordingStatus("recording");
-    //create new Media recorder instance using the stream
+    setTalkingStatus("wait");
     const media = new MediaRecorder(stream, { mimeType });
-    //set the MediaRecorder instance to the mediaRecorder ref
     mediaRecorder.current = media;
-    //invokes the start method to start the recording process
+    setTalkingStatus("recording");
     mediaRecorder.current.start();
     let localAudioChunks : Blob[] = [];
     mediaRecorder.current.ondataavailable = (event) => {
@@ -48,44 +85,33 @@ const AudioRecorder = ({setAudio}: {setAudio: Dispatch<SetStateAction<Blob | nul
   const stopRecording = () => {
     if (!mediaRecorder.current) return
 
-    setRecordingStatus("inactive");
-    //stops the recording instance
     mediaRecorder.current.stop();
     mediaRecorder.current.onstop = () => {
-      //creates a blob file from the audiochunks data
-       const audioBlob = new Blob(audioChunks, { type: mimeType });
-      //creates a playable URL from the blob file.
-       const audioUrl = URL.createObjectURL(audioBlob);
-       setAudio(audioBlob)
-       //setAudio(audioUrl);
-       //saveFile()
-       setAudioChunks([]);
+      const audioBlob = new Blob(audioChunks, { type: "audio/mp3; codecs=opus" });
+      audioBlob.arrayBuffer().then((arrayBuffer) => {
+        const buffer = Buffer.from(arrayBuffer)
+        const base64Audio = bufferToBase64(buffer)        
+        setAudio(base64Audio)
+        setTalkingStatus("fetching")
+      })
+
+      setAudioChunks([]);
     };
   };
 
   return (
     <div>
-      <h2>Audio Recorder</h2>
-      <main>
-        <div className="audio-controls">
-          {!permission ? (
-          <button onClick={getMicrophonePermission} type="button">
-              Get Microphone
-          </button>
-          ) : null}
-          {permission && recordingStatus === "inactive" ? (
-          <button onClick={startRecording} type="button">
-              Start Recording
-          </button>
-          ) : null}
-          {recordingStatus === "recording" ? (
-          <button onClick={stopRecording} type="button">
-              Stop Recording
-          </button>
-          ) : null}
-          
-        </div>
-      </main>
+      <Button
+        size="variable"
+        className="p-5 rounded-full transition-colors duration-300"
+        variant={buttonStyleHandler()}
+        onClick={actionHandler}
+        disabled={buttonStyleHandler() == 'disabled'}
+        {...props}
+        // className="p-5 rounded-full bg-gradient-to-tr from-indigo-500 from-0% via-sky-500 via-30% to-emerald-400 to-90% hover:from-indigo-400 hover:via-sky-400 hover:to-emerald-300 "
+      >
+        <MicOnIcon className={`fill-white w-8 h-8`} />
+      </Button>
     </div>
   );
 };
