@@ -16,7 +16,7 @@ module.exports = {
   plugins: ['jsx-a11y', '@typescript-eslint', '@next/eslint-plugin-next'],
   rules: {
     'prettier/prettier': [
-      'error',
+      'warn',
       {
         printWidth: 120,
         tabWidth: 2,
