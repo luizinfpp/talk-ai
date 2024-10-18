@@ -17,7 +17,7 @@ const AudioRecorder = ({
   setTalkingStatus,
   ...props
 }: AudioRecorderProps) => {
-  const mimeType = "audio/webm";
+  const mimeType = "audio/mp4";
 
   const mediaRecorder = useRef<MediaRecorder | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -99,7 +99,7 @@ const AudioRecorder = ({
     mediaRecorder.current.stop();
     mediaRecorder.current.onstop = () => {
       const audioBlob = new Blob(audioChunks, {
-        type: "audio/mp3; codecs=opus",
+        type: "audio/mp4; codecs=opus",
       });
       audioBlob.arrayBuffer().then((arrayBuffer) => {
         const buffer = Buffer.from(arrayBuffer);
