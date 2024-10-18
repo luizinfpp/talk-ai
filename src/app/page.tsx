@@ -102,7 +102,7 @@ export default function Home() {
     if (!audioAnswer) return; // TODO: better handling
 
     const audioSpeech = new Audio(audioAnswer);
-    // setIsAudioPlaying(true);
+    setIsAudioPlaying(true);
     audioSpeech.play();
     audioSpeech.onended = function () {
       setIsAudioPlaying(false);
