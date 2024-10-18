@@ -70,6 +70,7 @@ export const getSpeak = async (text: string) => {
   const mp3 = await openai.audio.speech.create({
     model: "tts-1",
     voice: "nova",
+    response_format: 'opus',
     input: text,
   });
 
