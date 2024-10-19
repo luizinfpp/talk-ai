@@ -23,6 +23,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { Howl } from "howler";
 
 const messages = {
   unregistered: "Please enter the password.",
@@ -90,7 +91,7 @@ export default function Home() {
     const result = await getSpeak(textAnswer);
 
     const buffer = base64ToBuffer(result);
-    const audioBlob = new Blob([buffer]);
+    const audioBlob = new Blob([buffer], { type: 'audio/mp4' });
     const audioUrl = URL.createObjectURL(audioBlob);
 
     setAudio(null);
@@ -101,22 +102,23 @@ export default function Home() {
   const playAudio = () => {
     if (!audioAnswer) return; // TODO: better handling
 
-    // const audioSpeechHowl = new Howl({
-    //   src: [audioAnswer],
-    //   onend: function() {
-    //     setIsAudioPlaying(false);
-    //   }
-    // })
+    const audioSpeechHowl = new Howl({
+      src: [audioAnswer],
+      format: ['ogg'],
+      onend: function() {
+        setIsAudioPlaying(false);
+      }
+    })
 
-    // setIsAudioPlaying(true);
-    // audioSpeechHowl.play()
-
-    const audioSpeech = new Audio(audioAnswer);
     setIsAudioPlaying(true);
-    audioSpeech.play();
-    audioSpeech.onended = function () {
-      setIsAudioPlaying(false);
-    };
+    audioSpeechHowl.play()
+
+    // const audioSpeech = new Audio(audioAnswer);
+    // setIsAudioPlaying(true);
+    // audioSpeech.play();
+    // audioSpeech.onended = function () {
+    //   setIsAudioPlaying(false);
+    // };
     setTalkingStatus("ready");
   };
 
