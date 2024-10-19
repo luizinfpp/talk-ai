@@ -83,7 +83,7 @@ const AudioRecorder = ({
     const media = new MediaRecorder(stream, { mimeType });
     mediaRecorder.current = media;
     setTalkingStatus("recording");
-    mediaRecorder.current.start();
+    mediaRecorder.current.start(1000);
     const localAudioChunks: Blob[] = [];
     mediaRecorder.current.ondataavailable = (event) => {
       if (typeof event.data === "undefined") return;

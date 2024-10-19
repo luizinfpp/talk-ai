@@ -23,6 +23,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { Howl } from "howler";
 
 const messages = {
   unregistered: "Please enter the password.",
@@ -100,6 +101,16 @@ export default function Home() {
 
   const playAudio = () => {
     if (!audioAnswer) return; // TODO: better handling
+
+    // const audioSpeechHowl = new Howl({
+    //   src: [audioAnswer],
+    //   onend: function() {
+    //     setIsAudioPlaying(false);
+    //   }
+    // })
+
+    // setIsAudioPlaying(true);
+    // audioSpeechHowl.play()
 
     const audioSpeech = new Audio(audioAnswer);
     setIsAudioPlaying(true);
