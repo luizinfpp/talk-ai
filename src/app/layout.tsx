@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "min-h-screen bg-background antialiased",
+          "min-h-dvh bg-background antialiased",
           inter.className,
         )}
       >

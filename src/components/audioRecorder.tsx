@@ -9,12 +9,14 @@ interface AudioRecorderProps
   talkingStatus: TalkingType;
   setAudio: Dispatch<SetStateAction<string | null>>;
   setTalkingStatus: Dispatch<SetStateAction<TalkingType>>;
+  isMobile: boolean
 }
 
 const AudioRecorder = ({
   setAudio,
   talkingStatus,
   setTalkingStatus,
+  isMobile,
   ...props
 }: AudioRecorderProps) => {
   const mimeType = "audio/mp4";
@@ -23,7 +25,11 @@ const AudioRecorder = ({
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
 
-  const actionHandler = () => {
+  const actionHandler = (action: string) => {
+    if(isMobile && action === "click") return
+    if(!isMobile && action !== "click") return
+    if(isMobile && action === "touchEnd" && talkingStatus !== "recording") return
+
     switch (talkingStatus) {
       case "unable":
         getMicrophonePermission();
@@ -118,7 +124,9 @@ const AudioRecorder = ({
         size="variable"
         className="p-5 rounded-full transition-colors duration-300"
         variant={buttonStyleHandler()}
-        onClick={actionHandler}
+        onClick={() => actionHandler("click")}
+        onTouchStart={() => actionHandler("touchStart")}
+        onTouchEnd={() => actionHandler("touchEnd")}
         disabled={buttonStyleHandler() === "disabled"}
         {...props}
         // className="p-5 rounded-full bg-gradient-to-tr from-indigo-500 from-0% via-sky-500 via-30% to-emerald-400 to-90% hover:from-indigo-400 hover:via-sky-400 hover:to-emerald-300 "

@@ -57,6 +57,8 @@ export default function Home() {
     useState<TalkingType>("unregistered");
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
+  const [windowWidth, setWindowWidth] = useState<null|number>(null)
+
   const formSchema = z.object({
     password: z.string(),
   });
@@ -107,22 +109,14 @@ export default function Home() {
       format: ['mp4']
     })
 
-    audioSpeechHowl.on('play', function() {
-      setIsAudioPlaying(true);
-    })
-
+    setIsAudioPlaying(true);
+    
     audioSpeechHowl.on('end', function() {
       setIsAudioPlaying(false);
     })
 
     audioSpeechHowl.play()
 
-    // const audioSpeech = new Audio(audioAnswer);
-    // setIsAudioPlaying(true);
-    // audioSpeech.play();
-    // audioSpeech.onended = function () {
-    //   setIsAudioPlaying(false);
-    // };
     setTalkingStatus("ready");
   };
 
@@ -152,8 +146,20 @@ export default function Home() {
     if (audioAnswer) playAudio();
   }, [audioAnswer]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth)
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
   return (
-    <main className="flex min-h-screen flex-col items-center p-12 bg-slate-100 gap-6">
+    <main className="flex min-h-dvh flex-col items-center p-12 bg-slate-100 gap-6">
       <div className="bg-slate-50 rounded-md flex-grow w-full h-full flex flex-col justify-evenly items-center gap-4 p-8">
         <div>
           {talkingStatus === "unregistered" && (
@@ -198,10 +204,10 @@ export default function Home() {
                 </Button>
               </div>
               {!isAudioPlaying && (
-                <p className="text-slate-400 text-sm">{textFromVoice}</p>
-              )}
-              {!isAudioPlaying && (
-                <p className="text-indigo-400 text-sm">{textAnswer}</p>
+                <div className="flex flex-col gap-2">
+                  <p className="text-slate-400 text-sm">{textFromVoice}</p>
+                  <p className="text-indigo-400 text-sm">{textAnswer}</p>
+                </div>
               )}
             </div>
           ) : (
@@ -213,6 +219,7 @@ export default function Home() {
         setAudio={setAudio}
         talkingStatus={talkingStatus}
         setTalkingStatus={setTalkingStatus}
+        isMobile={windowWidth? windowWidth < 700 : false}
       />
 
       {/* {

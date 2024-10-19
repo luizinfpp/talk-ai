@@ -44,7 +44,7 @@ export const getAnswer = async (text: string) => {
       {
         role: "system",
         content:
-          "At the end of the answer you can add a small phrase pointing out some grammar errors or tips to improve the language learning of the user.",
+          "At the end of the answer you can add a small phrase pointing out some grammar errors or tips to improve the language learning of the user. Grammar errors or misuse or words you point out always. However, if it's just English tips to sound better you point just one third of the times.",
       },
       { role: "system", content: "Use always English language to answer." },
       { role: "user", content: "Who won the world series in 2020?" },
