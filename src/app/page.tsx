@@ -104,7 +104,7 @@ export default function Home() {
 
     const audioSpeechHowl = new Howl({
       src: [audioAnswer],
-      format: ['ogg']
+      format: ['mp4']
     })
 
     audioSpeechHowl.on('play', function() {
