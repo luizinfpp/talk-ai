@@ -104,13 +104,17 @@ export default function Home() {
 
     const audioSpeechHowl = new Howl({
       src: [audioAnswer],
-      format: ['ogg'],
-      onend: function() {
-        setIsAudioPlaying(false);
-      }
+      format: ['ogg']
     })
 
-    setIsAudioPlaying(true);
+    audioSpeechHowl.on('play', function() {
+      setIsAudioPlaying(true);
+    })
+
+    audioSpeechHowl.on('end', function() {
+      setIsAudioPlaying(false);
+    })
+
     audioSpeechHowl.play()
 
     // const audioSpeech = new Audio(audioAnswer);
