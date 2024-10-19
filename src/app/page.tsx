@@ -159,8 +159,8 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-dvh flex-col items-center lg:p-12 p-4 bg-slate-100 gap-6">
-      <div className="bg-slate-50 rounded-md flex-grow w-full h-full flex flex-col justify-evenly items-center gap-4 p-8">
+    <main className="flex min-h-dvh flex-col items-center lg:p-12 p-4 pb-8 bg-slate-100 gap-6">
+      <div className="bg-slate-50 rounded-md flex-grow w-full h-full flex flex-col justify-evenly items-center gap-4 lg:p-8 p-4">
         <div>
           {talkingStatus === "unregistered" && (
             <Form {...form}>
@@ -219,7 +219,7 @@ export default function Home() {
         setAudio={setAudio}
         talkingStatus={talkingStatus}
         setTalkingStatus={setTalkingStatus}
-        isMobile={windowWidth? windowWidth < 700 : false}
+        isMobile={windowWidth? windowWidth < 1000 : false}
       />
 
       {/* {
