@@ -23,7 +23,6 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Howl } from "howler";
 
 const messages = {
   unregistered: "Please enter the password.",
