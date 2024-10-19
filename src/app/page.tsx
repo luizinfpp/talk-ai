@@ -110,7 +110,7 @@ export default function Home() {
     })
 
     setIsAudioPlaying(true);
-    
+
     audioSpeechHowl.on('end', function() {
       setIsAudioPlaying(false);
     })
@@ -159,7 +159,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-dvh flex-col items-center p-12 bg-slate-100 gap-6">
+    <main className="flex min-h-dvh flex-col items-center lg:p-12 p-4 bg-slate-100 gap-6">
       <div className="bg-slate-50 rounded-md flex-grow w-full h-full flex flex-col justify-evenly items-center gap-4 p-8">
         <div>
           {talkingStatus === "unregistered" && (
